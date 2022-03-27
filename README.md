@@ -1,61 +1,67 @@
 # Unfinished-business
-Move unfinished tasks to today, Logseq plugin
 
-With great power comes great responsibility.
+[![latest release version](https://img.shields.io/github/v/release/QWxleA/Unfinished-business)](https://github.com/QWxleA/Unfinished-business)
+[![License](https://img.shields.io/github/license/QWxleA/Unfinished-business?color=blue)](https://github.com/QWxleA/Unfinished-business/blob/main/LICENSE)
 
-This plugin moves blocks from one place tothe other. 
+This plugin migrates yesterdays unfinished tasks to todays journal. It is *meant* to be used in a template, but can be run mannually as well. It supports limiting tasks to specific markers or tags.
 
-## Installation FIXME
+**Notice:** This plugin is in beta, make backups of your graph. It shouldn't, but *can* (theoratically) make tasks disappear in the digital void.
 
-- `git clone https://github.com:QWxleA/logseq-serendipity.git`
-- open Logseq Desktop client and turn on `Developer mode` in the user settings panel (`Esc t s`)
-- open the toolbar dot menu and navigate to the plugins page (`Esc t p`)
-- click `Load unpacked package` button, then select the `logseq-random-note` directory
+> I can't believe it! They keep following me. 
+>
+>— <cite>Unhappy customer</cite>
 
-## Configuration FIXME
+## Installation
 
-Under **Settings** (which can be found on the plugin's card in the left lower corner), or under **Settings**:
+### Preparation
 
-- *Include journals* will show any page *or* journal as a random page
-- *Show entire graph or tagged pages* makes it possible to limit the choice to only **pages** with a specific tag
-- *Specific tag to search* tag to limit the search to. These are page tags: (`tags::` straight under the title)
+- Click the 3 dots in the righthand corner and go to **Settings**.
+- Go to **Advanced** and enable **Plug-in system**.
+- Restart the application.
+- Click 3 dots and go to Plugins (or `Esc t p`).
 
-## Usage FIXME
+### Install plugin from the Marketplace (recommended) 
 
-![screenshot](./screenshot.png)
+- Click the `Marketplace` button and then click `Plugins`.
+- Find the plugin and click `Install`.
 
-1. Press the button to show a random page (what it shows depends on settings).
+### Install plugin manually
 
-2. Using the keybinding: `s r` shows any random page
-3. Using the keybinding: `s j` shows a random journal page
-4. Using the keybinding: `s n` shows random page, anything but a journal page
-5. Using the keybinding: `s s` shows random tagged page
+- Download a released version assets from Github.
+- Unzip it.
+- Click `Load unpacked plugin`, and select destination directory to the unzipped folder.
 
-6. Use the *command palette* `Ctrl+Shift+p` and then `Show random page`
-7. Use the *command palette* `Ctrl+Shift+p` and then `Show random journal page`
-8. Use the *command palette* `Ctrl+Shift+p` and then `Show random page, anything but a journal page`
-9. Use the *command palette* `Ctrl+Shift+p` and then `Show random tagged page`
+## Using the plugin
 
-## Template FIXME
+The default way to use the plugin is place a *placeholder* in your `daily` template. Then, when the template is run at midnight, all tasks are moved to the newly created page. Use: `/move unfinished business here`.
 
-The plugin makes it possible to add a random quote (or any other tag) in a template.
+![template.gif](./template.gif)
 
-Usage:
+As an alternative, go to the location you want to gather the unfinished tasks, use `/move unfinished business here`, correct (or remove) the tag, leave the block, and the tasks will be migrated.
 
-type: `/Insert Serendipity`, and it will insert a code-snippet that will then be run with the template.
+**Important:** the placeholder, by default looks like this: `{{renderer :unfinishedBusiness, testme}}` to migrate *all* tasks remove both the tag **and the comma!**: `{{renderer :unfinishedBusiness}}`
 
-The code snippets looks like this `{{renderer :seredipity, quote}}`, and is supposed to be used in a template (it will work anywhere, but will immediately insert a random block).
+## Configuration
 
-The part you can alter is `quote`, use any tag you want, and it will randomly pull a block with that tag.
+- Click the 3 dots in the righthand corner and go to **Settings**.
+- Go to **Plugin Settings**.
+- Select correct plugin.
 
-### Notes
+![settings](./settings.png)
 
-This plugin is a partial is inspired by FIXME
+- Change `testme` to the tag you use to migrate tasks, or leave empty, then *all* tasks will be migrated.
+- Choose your favorite workflow. It will only migrate *these* tasks.
 
 ## Licence
 
-MIT
+[MIT](.LICENSE)
+
+### Image license
 
 ### Font License
 
 [OFL](./OFL.txt)
+
+## Notes
+
+This plugin is a partially is inspired by FIXME
