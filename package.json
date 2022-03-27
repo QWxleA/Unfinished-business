@@ -1,24 +1,24 @@
 {
-  "name": "logseq-starter-plugin",
-  "version": "1.0",
-  "description": "Starter Plugin",
+  "name": "unfinished-business",
+  "version": "0.1.0",
+  "description": "From daily template move yesterdays unfinished tasks to today",
   "main": "dist/index.html",
   "targets": {
     "main": false
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build --no-source-maps index.html --public-url ./"
+    "build": "parcel build --no-source-maps index.html --public-url ./",
+    "preview": "gh-social-preview.py -t \"Unfinished Business\" -e \"Productivity, GTD. But nottoday, maybe tomorrow. If not, then the day after.\" -i \"background.png\" -f \"BebasNeue-Regular.ttf\" -b \"Montserrat-VariableFont_wght.ttf\" -l icon2.png -v \"$npm_package_version\""
   },
-  "keywords": [],
-  "author": "Aryan Sawhney",
+  "keywords": ["task management", "logseq"],
+  "author": "Qwxlea",
   "license": "MIT",
   "dependencies": {
-    "@logseq/libs": "0.0.1-alpha.34"
+    "@logseq/libs": "0.0.1-alpha.35"
   },
   "logseq": {
-    "id": "logseq-starter-plugin",
-    "title": "logseq-starter-plugin",
+    "id": "unfinished-business",
+    "title": "Unfinished Business",
     "icon": "./icon.png"
   },
   "devDependencies": {
