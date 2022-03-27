@@ -1,6 +1,5 @@
 import '@logseq/libs';
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin';
-// import { SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin';
 
 const markers = ['"TODO" "LATER" "DOING" "NOW"','"LATER" "NOW"','"TODO" "DOING"']
 export const settingsTemplate: SettingSchemaDesc[] = [{
@@ -53,18 +52,13 @@ async function parseQuery(queryTag){
   const query = `[:find (pull ?b [*])
     :where
     [?b :block/marker ?m]
-    [(contains? #{${markers[logseq.settings.searchMarkers]} ?m)]
+    [(contains? #{${logseq.settings.searchMarkers}} ?m)]
     ${searchTag}
     [?b :block/page ?p]
     [?p :block/journal? true]
     [?p :block/journal-day ${journalYesterday()}]]`
   try { 
-    console.log("UB query",query, markers, logseq.settings.searchMarkers)
     const results = await logseq.DB.datascriptQuery(query) 
-    // console.log("UB results",results)
-    // let flattenedResults = results.map((mappedQuery) => ({
-    //   uuid: mappedQuery[0].uuid['$uuid$'],
-    // return(flattenedResults)
     return(results)
   } catch (error) {return false}
 }
@@ -87,28 +81,20 @@ const main = async () => {
   //  FIXME do I want to give feedback? logseq.App.showMsg('❤️ Message from Hello World Plugin :)')
   logseq.provideModel({
   })
-  console.log("we're in business")
+  // console.log("we're in business")
 
   logseq.Editor.registerSlashCommand("Move unfinished business here", async () => {
     await logseq.Editor.insertAtEditingCursor(`{{renderer :unfinishedBusiness ${logseq.settings.defaultTag ? ", "+logseq.settings.defaultTag : ""}}}`)})
 
   logseq.App.onMacroRendererSlotted(async ({ slot, payload }) => {
     try {
-      console.log("OK", payload)
-      console.log("OK.arg", payload.arguments)
-      console.log("OK.arg[0]", payload.arguments[0])
       if (payload.arguments[0].trim() !== ":unfinishedBusiness") return
-      console.log("OK22", payload)
-
       const taskTag = (payload.arguments.length > 1) ? payload.arguments[1] : "" 
-      console.log("TT", taskTag, "-", payload.arguments[1], "l:", payload.arguments.length)
 
       //is the block on a template?
       const templYN = await onTemplate(payload.uuid)        
       // parseQuery returns false if no block can be found
       const blocks = await parseQuery(taskTag)
-      console.log(`template? ${templYN} blocks:`,blocks,blocks.length)
-
       const color  = ( templYN === true ) ? "green" : "red"
       const errMsg = ( templYN === true ) ? "will run with template" : "Cannot find tagged tasks"
 

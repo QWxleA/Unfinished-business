@@ -1,7 +1,7 @@
 {
   "name": "unfinished-business",
-  "version": "0.1.0",
-  "description": "From daily template move yesterdays unfinished tasks to today",
+  "version": "0.1.1",
+  "description": "Move yesterdays unfinished tasks to today",
   "main": "dist/index.html",
   "targets": {
     "main": false
@@ -11,7 +11,7 @@
     "preview": "gh-social-preview.py -t \"Unfinished Business\" -e \"Productivity, GTD. But nottoday, maybe tomorrow. If not, then the day after.\" -i \"background.png\" -f \"BebasNeue-Regular.ttf\" -b \"Montserrat-VariableFont_wght.ttf\" -l icon2.png -v \"$npm_package_version\""
   },
   "keywords": ["task management", "logseq"],
-  "author": "Qwxlea",
+  "author": "Alex Qwxlea",
   "license": "MIT",
   "dependencies": {
     "@logseq/libs": "0.0.1-alpha.35"
