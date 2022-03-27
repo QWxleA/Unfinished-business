@@ -20,24 +20,6 @@ export const settingsTemplate: SettingSchemaDesc[] = [{
 }
 ]
 logseq.useSettingsSchema(settingsTemplate);
-
-// async function getLastBlock(pageName: string): Promise<null | BlockEntity> {
-//   const blocks = await logseq.Editor.getPageBlocksTree(pageName);
-//   if (blocks.length === 0) {
-//     return null;
-//   }
-//   return blocks[blocks.length - 1];
-// }
-
-// //Inputs 5 numbered blocks when called
-// async function insertSomeBlocks (e) {
-//   console.log('Open the calendar!')
-//   let numberArray = [1, 2, 3, 4, 5]
-//   for (const number in numberArray){
-//   logseq.App.showMsg("Function has been run")
-//   logseq.Editor.insertBlock(e.uuid, `This is block ${numberArray[number]}`, {sibling: true})}
-
-//   }
   
 function journalYesterday() {
   //hardcoded yesterday
@@ -84,7 +66,7 @@ const main = async () => {
   // console.log("we're in business")
 
   logseq.Editor.registerSlashCommand("Move unfinished business here", async () => {
-    await logseq.Editor.insertAtEditingCursor(`{{renderer :unfinishedBusiness ${logseq.settings.defaultTag ? ", "+logseq.settings.defaultTag : ""}}}`)})
+    await logseq.Editor.insertAtEditingCursor(`{{renderer :unfinishedBusiness${logseq.settings.defaultTag ? ", "+logseq.settings.defaultTag : ""}}}`)})
 
   logseq.App.onMacroRendererSlotted(async ({ slot, payload }) => {
     try {
@@ -96,7 +78,7 @@ const main = async () => {
       // parseQuery returns false if no block can be found
       const blocks = await parseQuery(taskTag)
       const color  = ( templYN === true ) ? "green" : "red"
-      const errMsg = ( templYN === true ) ? "will run with template" : "Cannot find tagged tasks"
+      const errMsg = ( templYN === true ) ? "will run with template" : "Cannot find any (tagged) tasks"
 
       if ( templYN ||  blocks == false ) { 
           await logseq.provideUI({
