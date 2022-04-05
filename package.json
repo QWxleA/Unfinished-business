@@ -1,6 +1,6 @@
 {
   "name": "unfinished-business",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Move yesterdays unfinished tasks to today",
   "main": "dist/index.html",
   "targets": {
@@ -19,7 +19,7 @@
   "logseq": {
     "id": "unfinished-business",
     "title": "Unfinished Business",
-    "icon": "./img/icon.png"
+    "icon": "icon.png"
   },
   "devDependencies": {
     "parcel": "^2.0.0"
