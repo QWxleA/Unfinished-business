@@ -91,7 +91,45 @@ The default way to use the plugin is place a *placeholder* in your `daily` templ
 
 As an alternative, go to the location you want to gather the unfinished tasks, use `/move unfinished business here`, correct (or remove) the tag, leave the block, and the tasks will be migrated.
 
-**Important:** the placeholder, by default looks like this: `{{renderer :unfinishedBusiness, testme}}` to migrate *all* tasks remove both the tag **and the comma!**: `{{renderer :unfinishedBusiness}}`
+### Testing if it works
+
+As a test, create two tasks in **yesterdays** journal page:
+
+``` markdown
+LATER This is a test [[testme]]
+LATER This is a second test [[testme]]
+```
+
+Then place a placeholder with: `/move unfinished business here` Press escape to leave the block" 
+
+If everything is working, you should see:
+
+``` markdown
+**🚀 Moved 2 unfinished tasks from yesterday **
+LATER This is a test [[testme]]
+LATER This is a second test [[testme]]
+```
+
+**Important:** the placeholder, by default looks like this: `{{renderer :unfinishedBusiness, testme}}` to migrate *all* yesterdays tasks (ignoring all tags) remove *both* the tag **and the comma!** It should look like this: `{{renderer :unfinishedBusiness}}`
+
+### Imsure — for when you live dangerously
+
+It is possible to run *unfinished business* on your *whole* graph. This can be dangerous, so has it's own flag:
+
+`{{renderer :unfinishedBusiness, testme, imsure}}`
+
+- **testme** would be the tag matched against
+- **imsure** is to make sure you want it to check *all* your pages
+
+So, this will move *all* tasks, from *all* pages, with the `[[testme]]` tag.
+
+Last, it is possible to run *unfinished business* on *all tasks* *all over your graph*, ignoring **all** tags: 
+
+`{{renderer :unfinishedBusiness, imsure, imsure}}`
+
+This will move **all** tasks (as defined in your config), from **all over your graph**, with **any, or no** tag, to the place you ran the macro from!
+
+So make sure you're *really* *really* sure 😜.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -105,23 +143,6 @@ As an alternative, go to the location you want to gather the unfinished tasks, u
 
 - Change `testme` to the tag you use to migrate tasks, or leave empty, then *all* tasks will be migrated.
 - Choose your favorite workflow. It will only migrate *these* tasks.
-
-### Imsure — for when you live dangerously
-
-It is possible to run *unfinished business* on your *whole* graph. This can be dangerous, so has it's own flag:
-
-`{{renderer :unfinishedBusiness, testme, imsure}}`
-
-- **testme** would be the tag matched against
-- **imsure** is to make sure you want it to check *all* your pages
-
-Last, it is possible to run *unfinished business* on *all tasks* *all over your graph*: 
-
-`{{renderer :unfinishedBusiness, imsure, imsure}}`
-
-This will move **all** tasks (as defined in your config), from **all over your graph**, to the place you ran the macro from!
-
-You know, just so you're *really* sure 😜.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
