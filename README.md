@@ -119,6 +119,8 @@ Last, it is possible to run *unfinished business* on *all tasks* *all over your 
 
 `{{renderer :unfinishedBusiness, imsure, imsure}}`
 
+This will move **all** tasks (as defined in your config), from **all over your graph**, to the place you ran the macro from!
+
 You know, just so you're *really* sure 😜.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
