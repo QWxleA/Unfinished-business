@@ -1,6 +1,6 @@
 {
   "name": "unfinished-business",
-  "version": "0.1.4",
+  "version": "0.1.4b",
   "description": "Move yesterdays unfinished tasks to today",
   "main": "dist/index.html",
   "targets": {
