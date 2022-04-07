@@ -1,16 +1,17 @@
 import '@logseq/libs';
 import { BlockEntity, SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin';
+import _ from 'lodash';
 
 const pluginName = ["unfinished-business", "Unfinished Business"]
 const markers = ['"TODO" "LATER" "DOING" "NOW"','"LATER" "NOW"','"TODO" "DOING"']
+const sortList = ["Alphabetical", "by Marker then Priority", "by Priority then Marker", "Unsorted"]
 export const settingsTemplate: SettingSchemaDesc[] = [{
   key: "defaultTag",
   type: 'string',
   default: "testme",
   title: "default search tag?",
   description: "Use this for testing, or if you tag your tasks",
-},
-{
+},{
    key: "searchMarkers",
    type: 'enum',
    enumChoices: markers,
@@ -18,6 +19,14 @@ export const settingsTemplate: SettingSchemaDesc[] = [{
    default: markers[1],
    title: "What markers to carry over to today?",
    description: "What markers should be moved, and which should stay?",
+},{
+  key: "sortOrder",
+  type: 'enum',
+  enumChoices: sortList,
+  enumPicker: 'radio',
+  default: sortList[2],
+  title: "How to sort movable tasks?",
+  description: "Sort order: Alphabetical, by Marker then Priority, by Priority then Marker, or None",
 }
 ]
 logseq.useSettingsSchema(settingsTemplate);
@@ -66,6 +75,19 @@ async function onTemplate(uuid){
   } catch (error) { console.log(error) }
 }
 
+function cmpContent(a,b) {
+  const re = new RegExp(`^(LATER|NOW|TODO|DOING) (\\[#.])? *`)
+  const left = re.test(a.content) ? a.content.replace(re, '') : a.content
+  const right = re.test(b.content) ?  b.content.replace(re, '') : b.content
+  if ( left < right){
+    return -1;
+  }
+  if ( left > right){
+    return 1;
+  }
+  return 0;
+}
+
 const main = async () => {
   //  FIXME do I want to give feedback? logseq.App.showMsg('❤️ Message from Hello World Plugin :)')
   logseq.provideModel({
@@ -78,18 +100,20 @@ const main = async () => {
   logseq.App.onMacroRendererSlotted(async ({ slot, payload }) => {
     try {
       if (payload.arguments[0].trim() !== ":unfinishedBusiness") return
+
+      console.log("DB", payload)
       const taskTag = (payload.arguments.length > 1) ? payload.arguments[1] : "" 
       const omniOK  = (payload.arguments[2] === "imsure") ? true : false 
-
+      
       //is the block on a template?
       const templYN = await onTemplate(payload.uuid)        
       // parseQuery returns false if no block can be found
-      const blocks = await parseQuery(taskTag, omniOK)
+      let blocks = await parseQuery(taskTag, omniOK)
       const color  = ( templYN === true ) ? "green" : "red"
       const errMsg = ( templYN === true ) ? "will run with template" : "Cannot find any (tagged) tasks"
-
+      
       if ( templYN ||  blocks == false ) { 
-          await logseq.provideUI({
+        await logseq.provideUI({
           key: pluginName[0],
           slot,
           template: `<span style="color: ${color}">{{renderer ${payload.arguments} }}</span> (${errMsg})`,
@@ -99,10 +123,27 @@ const main = async () => {
         return 
       }
       else { 
-        await logseq.Editor.updateBlock(payload.uuid, `**🚀 Moved ${blocks ?  blocks.length : "zero" } unfinished tasks ${omniOK ? "" : "from yesterday "}${ (taskTag) ? "(#"+taskTag+")" : "" }**` ) 
+        let msg  = `**🚀 Moved ${blocks ?  blocks.length : "zero" } tasks`
+            msg += `(${logseq.settings.sortOrder})`
+            msg += `${omniOK ? "" : " from yesterday"}`
+            msg += `${ (taskTag) ? " (#"+taskTag+")" : "" }**`
+        await logseq.Editor.updateBlock(payload.uuid, msg ) 
+
+        //sort blocks
+        blocks = blocks.flat()
+        if (logseq.settings.sortOrder === sortList[0]) {
+          blocks.sort(cmpContent);
+        } else if (logseq.settings.sortOrder === sortList[1]) {
+          blocks =  _.orderBy(blocks,['marker','priority'],['desc','asc'])
+        } else if (logseq.settings.sortOrder === sortList[2]) {
+          blocks =  _.orderBy(blocks,['priority','marker'],['asc','desc'])
+        } else { 
+          // sortList[3] do nothing
+        }
+
         blocks.forEach(async (item) => {
-          await logseq.Editor.moveBlock(item[0].uuid['$uuid$'], payload.uuid, { before: true })
-          // console.log("item:",item[0].uuid['$uuid$'])
+          await logseq.Editor.moveBlock(item.uuid['$uuid$'], payload.uuid, { before: true })
+          // console.log("item:",item)
         })
       }  
     } catch (error) { console.log(error) }

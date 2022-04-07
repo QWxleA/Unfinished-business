@@ -1,6 +1,6 @@
 {
   "name": "unfinished-business",
-  "version": "0.1.4f",
+  "version": "0.1.5",
   "description": "Move yesterdays unfinished tasks to today",
   "main": "dist/index.html",
   "targets": {
@@ -14,7 +14,8 @@
   "author": "Alex Qwxlea",
   "license": "MIT",
   "dependencies": {
-    "@logseq/libs": "0.0.1-alpha.35"
+    "@logseq/libs": "0.0.1-alpha.35",
+    "lodash": "^4.17.21"
   },
   "logseq": {
     "id": "unfinished-business",
@@ -22,6 +23,7 @@
     "icon": "icon.png"
   },
   "devDependencies": {
-    "parcel": "^2.0.0"
+    "parcel": "^2.0.0",
+    "@types/lodash": "^4.14.177"
   }
 }
