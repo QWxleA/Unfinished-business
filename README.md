@@ -144,6 +144,12 @@ So make sure you're *really* *really* sure 😜.
 - Change `testme` to the tag you use to migrate tasks, or leave empty, then *all* tasks will be migrated.
 - Choose your favorite workflow. It will only migrate *these* tasks.
 
+### New in 0.1.5 Sort
+
+It is possible to sort the moving tasks:
+
+Sort order: Alphabetical, by Marker then Priority, by Priority then Marker, or Not at all.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Licence
