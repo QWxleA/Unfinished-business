@@ -142,7 +142,7 @@ const main = async () => {
         }
 
         blocks.forEach(async (item) => {
-          await logseq.Editor.moveBlock(item.uuid['$uuid$'], payload.uuid, { before: true })
+          await logseq.Editor.moveBlock(item.uuid, payload.uuid, { before: true })
           // console.log("item:",item)
         })
       }  
