@@ -30,19 +30,25 @@ export const settingsTemplate: SettingSchemaDesc[] = [{
 }
 ]
 logseq.useSettingsSchema(settingsTemplate);
-  
+
 function journalYesterday() {
   //returns yesterdays date
   let date = (function(d){ d.setDate(d.getDate()-1); return d})(new Date)
   return parseInt(`${date.getFullYear()}${("0" + (date.getMonth()+1)).slice(-2)}${("0" + date.getDate()).slice(-2)}`,10)
 }
 
-async function parseQuery(queryTag, omniOK){
+async function parseQuery(queryTag, omniOK, journals){
   // console.log("DB", queryTag,omniOK)
   let searchTag  = (queryTag) ? `[?b :block/path-refs [:block/name "${queryTag.toLowerCase().trim().replace(/^["'](.+(?=["']$))["']$/, '$1')}"]]
 ` : ""
-  const omniSearch = (omniOK) ? "" : `[?p :block/journal? true] [?p :block/journal-day ${journalYesterday()}]`
-  if (queryTag === "imsure" && omniOK) searchTag = ""
+
+  let omniSearch = ""
+  if (!omniOK)
+    omniSearch += `[?p :block/journal? true]`
+  if (!omniOK && !journals)
+    omniSearch += `[?p :block/journal-day ${journalYesterday()}]`
+
+  if (queryTag === "imsure" && (omniOK || journals)) searchTag = ""
 
   // https://stackoverflow.com/questions/19156148/i-want-to-remove-double-quotes-from-a-string
   const query = `[:find (pull ?b [*])
@@ -54,8 +60,8 @@ async function parseQuery(queryTag, omniOK){
     ${omniSearch}
     ]`
     // console.log("UB debug query", query);
-    try { 
-      const results = await logseq.DB.datascriptQuery(query) 
+    try {
+      const results = await logseq.DB.datascriptQuery(query)
       return(results)
       // console.log("UB: parseQuery", results);
   } catch (error) {return false}
@@ -69,8 +75,8 @@ async function onTemplate(uuid){
     const checkPRT = (block.parent != null && block.parent.id !== block.page.id)  ? true : false
 
     if (checkTPL === false && checkPRT === false) return false
-    if (checkTPL === true )                       return true 
-    return await onTemplate(block.parent.id) 
+    if (checkTPL === true )                       return true
+    return await onTemplate(block.parent.id)
 
   } catch (error) { console.log(error) }
 }
@@ -102,17 +108,20 @@ const main = async () => {
       if (payload.arguments[0].trim() !== ":unfinishedBusiness") return
 
       console.log("DB", payload)
-      const taskTag = (payload.arguments.length > 1) ? payload.arguments[1] : "" 
-      const omniOK  = (payload.arguments[2] === "imsure") ? true : false 
-      
+      const taskTag = (payload.arguments.length > 1) ? payload.arguments[1] : ""
+      const omniOK  = (payload.arguments[2] === "imsure") ? true : false
+
+      // If the arguments is "journals", then we want to move tasks from all journals
+      const journals = (payload.arguments[2] === "journals") ? true : false
+
       //is the block on a template?
-      const templYN = await onTemplate(payload.uuid)        
+      const templYN = await onTemplate(payload.uuid)
       // parseQuery returns false if no block can be found
-      let blocks = await parseQuery(taskTag, omniOK)
+      let blocks = await parseQuery(taskTag, omniOK, journals)
       const color  = ( templYN === true ) ? "green" : "red"
       const errMsg = ( templYN === true ) ? "will run with template" : "Cannot find any (tagged) tasks"
-      
-      if ( templYN ||  blocks == false ) { 
+
+      if ( templYN ||  blocks == false ) {
         await logseq.provideUI({
           key: pluginName[0],
           slot,
@@ -120,14 +129,14 @@ const main = async () => {
           reset: true,
           style: { flex: 1 },
         })
-        return 
+        return
       }
-      else { 
+      else {
         let msg  = `**🚀 Moved ${blocks ?  blocks.length : "zero" } tasks`
             msg += `(${logseq.settings.sortOrder})`
             msg += `${omniOK ? "" : " from yesterday"}`
             msg += `${ (taskTag) ? " (#"+taskTag+")" : "" }**`
-        await logseq.Editor.updateBlock(payload.uuid, msg ) 
+        await logseq.Editor.updateBlock(payload.uuid, msg )
 
         //sort blocks
         blocks = blocks.flat()
@@ -137,7 +146,7 @@ const main = async () => {
           blocks =  _.orderBy(blocks,['marker','priority'],['desc','asc'])
         } else if (logseq.settings.sortOrder === sortList[2]) {
           blocks =  _.orderBy(blocks,['priority','marker'],['asc','desc'])
-        } else { 
+        } else {
           // sortList[3] do nothing
         }
 
@@ -145,7 +154,7 @@ const main = async () => {
           await logseq.Editor.moveBlock(item.uuid, payload.uuid, { before: true })
           // console.log("item:",item)
         })
-      }  
+      }
     } catch (error) { console.log(error) }
   })
 }
